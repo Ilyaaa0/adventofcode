@@ -11,15 +11,24 @@ fn calculate() -> Result<(i32, i32), String> {
     let input = read_file().unwrap();
     let mut solutions: (i32, i32) = (0, 0);
 
-    for i in input.lines() {
-        let numbers = i
+    for line in input.lines() {
+        let mut numbers = line
             .split("x")
             .map(|x| x.trim().parse::<i32>().unwrap())
             .collect::<Vec<i32>>();
 
         solutions.0 += 2
             * (numbers[0] * numbers[1] + numbers[0] * numbers[2] + numbers[1] * numbers[2])
-            + min(numbers[0], min(numbers[1], numbers[2]));
+            + min(
+                numbers[0] * numbers[1],
+                min(numbers[1] * numbers[2], numbers[0] * numbers[2]),
+            );
+
+        let bow = numbers[0] * numbers[1] * numbers[2];
+
+        numbers.sort();
+
+        solutions.1 += 2 * (numbers[0] + numbers[1]) + bow;
     }
 
     println!("{}, {}", solutions.0, solutions.1);
@@ -29,4 +38,15 @@ fn calculate() -> Result<(i32, i32), String> {
 
 fn main() {
     calculate().unwrap();
+}
+
+#[cfg(test)]
+mod test {
+    use crate::calculate;
+
+    #[test]
+    fn test_second_day() {
+        let solutions: (i32, i32) = (1586300, 3737498);
+        assert_eq!(calculate(), Ok(solutions));
+    }
 }

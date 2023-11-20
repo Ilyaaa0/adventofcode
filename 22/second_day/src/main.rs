@@ -8,7 +8,7 @@ fn main() -> io::Result<()> {
     let mut solutions: (i32, i32) = (0, 0);
     let mut raw_content = String::new();
 
-    reader.read_to_string(&mut raw_content).unwrap();
+    reader.read_to_string(&mut raw_content)?;
 
     for i in raw_content.lines() {
         let values = i.split_whitespace().collect::<Vec<&str>>();

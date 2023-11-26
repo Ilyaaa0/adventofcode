@@ -6,15 +6,15 @@ fn main() -> io::Result<()> {
     let file = File::open("./src/assets/raw.txt")?;
     let mut reader = BufReader::new(file);
 
+    let mut solutions: (i32, i32) = (0, 0);
     let mut raw_content = String::new();
 
     reader.read_to_string(&mut raw_content)?;
 
-    let mut solutions: (i32, i32) = (0, 0);
-
     solutions.0 = calculate_duplicate_chars(raw_content).unwrap();
 
     println!("First solution: {}", solutions.0);
+    println!("Second solution: {}", solutions.1);
 
     Ok(())
 }
@@ -22,16 +22,17 @@ fn main() -> io::Result<()> {
 fn calculate_duplicate_chars(raw_content: String) -> Result<i32, String> {
     let mut result = 0;
     let mut duplicate_chars_vec = Vec::<char>::new();
+    let mut char: char = char::MAX;
 
     for i in raw_content.lines() {
         let (first_part, second_part) = i.split_at(i.len() / 2);
 
-    //     for ch in first_part.chars() {
-    //         if second_part.contains(ch) {
-    //             duplicate_chars_vec.push(ch);
-    //         }
-    //     }
-    // }
+        for ch in first_part.chars() {
+            second_part.contains(ch).then(|| char = ch);
+        }
+
+        duplicate_chars_vec.push(char);
+    }
 
     let lowercase_map = HashMap::from([
         ('a', 1),
@@ -94,9 +95,7 @@ fn calculate_duplicate_chars(raw_content: String) -> Result<i32, String> {
     for i in duplicate_chars_vec {
         let mut x = lowercase_map.get(&i);
 
-        if x.is_none() {
-            x = uppercase_map.get(&i);
-        }
+        x.is_none().then(|| x = uppercase_map.get(&i));
 
         result += x.unwrap();
     }
@@ -108,16 +107,16 @@ fn calculate_duplicate_chars(raw_content: String) -> Result<i32, String> {
 mod test {
     use super::*;
 
-    // #[test]
-    // fn check_calculate_duplicate_char() {
-    //     let test_data = "IlyaIlya".to_owned();
-    //     let expected = 73;
+    #[test]
+    fn check_calculate_duplicate_char() {
+        let test_data = "abcabd".to_owned();
+        let expected = 2;
 
-    //     assert_eq!(calculate_duplicate_chars(test_data), Ok(expected));
-    // }
+        assert_eq!(calculate_duplicate_chars(test_data), Ok(expected));
+    }
 
     #[test]
-    fn check_data_from_file() {
+    fn check_calculate_duplicate_char_from_file() {
         let test_data = std::fs::read_to_string("./src/assets/test.txt").unwrap();
         let expected = 157;
 

@@ -11,7 +11,8 @@ fn main() -> io::Result<()> {
 
     reader.read_to_string(&mut raw_content)?;
 
-    solutions.0 = calculate_duplicate_chars(raw_content).unwrap();
+    // solutions.0 = calculate_duplicate_chars(raw_content).unwrap();
+    solutions.1 = get_badges_count(raw_content).unwrap();
 
     println!("First solution: {}", solutions.0);
     println!("Second solution: {}", solutions.1);
@@ -22,16 +23,16 @@ fn main() -> io::Result<()> {
 fn calculate_duplicate_chars(raw_content: String) -> Result<i32, String> {
     let mut result = 0;
     let mut duplicate_chars_vec = Vec::<char>::new();
-    let mut char: char = char::MAX;
+    let mut duplicate_char: char = '\0';
 
     for i in raw_content.lines() {
         let (first_part, second_part) = i.split_at(i.len() / 2);
 
         for ch in first_part.chars() {
-            second_part.contains(ch).then(|| char = ch);
+            second_part.contains(ch).then(|| duplicate_char = ch);
         }
 
-        duplicate_chars_vec.push(char);
+        duplicate_chars_vec.push(duplicate_char);
     }
 
     let lowercase_map = HashMap::from([
@@ -101,6 +102,20 @@ fn calculate_duplicate_chars(raw_content: String) -> Result<i32, String> {
     }
 
     Ok(result)
+}
+
+fn get_badges_count(raw_content: String) -> Result<i32, String> {
+    let mut count = 0;
+    let mut line_vec: Vec<&str> = Vec::new();
+    let mut str = String::new();
+
+    for (index, line) in raw_content.lines().enumerate() {
+        if index % 3 == 0 {}
+
+        lines_vec.push(line);
+    }
+
+    Ok(count)
 }
 
 #[cfg(test)]

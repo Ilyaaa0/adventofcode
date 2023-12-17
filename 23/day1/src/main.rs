@@ -1,20 +1,11 @@
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{prelude::*, BufReader, Result};
+use std::{error::Error, fs::read_to_string};
 
-fn main() -> Result<()> {
-    let file = File::open("./src/assets/raw.txt")?;
-    let mut reader = BufReader::new(&file);
+fn main() -> Result<(), Box<dyn Error>> {
+    let content = read_to_string("./src/assets/raw.txt")?;
 
-    let mut content = String::new();
-    let mut solutions: (i32, i32) = (0, 0);
-
-    reader.read_to_string(&mut content)?;
-
-    solutions.0 = first_part(&content);
-    solutions.1 = second_part(&content);
-
-    println!("{:?}", solutions);
+    println!("{:?}", first_part(&content));
+    println!("{:?}", second_part(&content));
 
     Ok(())
 }
@@ -23,10 +14,10 @@ fn first_part(content: &String) -> i32 {
     let mut result = 0;
 
     for i in content.lines() {
-        let mut num_vec: Vec<i32> = Vec::new();
+        let mut num_vec: Vec<u32> = Vec::new();
 
         for j in i.chars() {
-            let num = j.to_string().parse::<i32>();
+            let num = j.to_string().parse::<u32>();
             num.is_ok().then(|| num_vec.push(num.unwrap()));
         }
 
@@ -55,15 +46,13 @@ fn second_part(raw: &String) -> i32 {
     ]);
 
     for i in raw.lines() {
-        let mut vec: Vec<i32> = Vec::new();
+        let mut chars_vec: Vec<char> = Vec::new();
 
-        for (str, val) in digits_map.iter() {
-            i.contains(str).then(|| vec.push(*val));
+        for j in i.chars() {
+            chars_vec.push(j)
         }
 
-        (!vec.is_empty()).then(|| result += vec.first().unwrap() + vec.last().unwrap());
-
-        println!("{:?}", vec);
+        println!("vec: {chars_vec:?}");
     }
 
     result
@@ -74,22 +63,18 @@ mod test {
     use super::*;
 
     #[test]
-    fn check_first_part() -> Result<()> {
-        let data = std::fs::read_to_string("./src/assets/test1.txt")?;
+    fn check_first_part() {
+        let data = std::fs::read_to_string("./src/assets/test1.txt").unwrap();
         let expected = 142;
 
         assert_eq!(first_part(&data), expected);
-
-        Ok(())
     }
 
     #[test]
-    fn check_second_part() -> Result<()> {
-        let data = std::fs::read_to_string("./src/assets/test2.txt")?;
+    fn check_second_part() {
+        let data = std::fs::read_to_string("./src/assets/test2.txt").unwrap();
         let expected = 281;
 
         assert_eq!(second_part(&data), expected);
-
-        Ok(())
     }
 }

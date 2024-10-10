@@ -1,50 +1,67 @@
 use std::{collections::HashSet, fs, io};
 
-fn main() -> Result<(), io::Error> {
-    let input = fs::read_to_string("./src/input.txt")?;
+fn main() -> io::Result<()> {
+    let input = fs::read_to_string("input.txt")?;
 
-    println!("{}", first_part(&input));
-    // println!("{}", second_part(&input));
+    let result = first_day(&input);
+
+    println!("day1 result: {result:?}");
+
+    let result = first_day_func(&input);
+
+    println!("{result}");
 
     Ok(())
 }
 
-fn first_part(input: &String) -> usize {
-    let mut position_set = HashSet::new();
+fn first_day(input: &str) -> usize {
+    let bytes = input.as_bytes();
+    let (mut x, mut y) = (0, 0);
+    let mut position_set = HashSet::from([(x, y)]);
 
-    let mut position = (0, 0);
-
-    position_set.insert(position);
-
-    for i in input.chars() {
-        if let '^' = i {
-            position.1 += 1;
+    for i in bytes {
+        match i {
+            &94 => x += 1,  // '^'
+            &118 => x -= 1, // 'v'
+            &62 => y += 1,  // '>'
+            &60 => y -= 1,  // '<'
+            _ => {}
         }
 
-        if let 'v' = i {
-            position.1 -= 1;
-        }
-
-        if let '<' = i {
-            position.0 -= 1;
-        }
-
-        if let '>' = i {
-            position.0 += 1;
-        }
-
-        position_set.insert(position);
+        position_set.insert((x, y));
     }
 
     position_set.len()
 }
 
-// fn second_part(input: &String) -> usize {
-//     let mut posion_set = HashSet::new();
+fn first_day_func(input: &str) -> usize {
+    let mut position_set = HashSet::from([(0, 0)]);
 
-//     let mut position = (0, 0);
+    input
+        .as_bytes()
+        .into_iter()
+        .fold((0, 0), |(mut x, mut y), v| {
+            match v {
+                &94 => x += 1,
+                &118 => x -= 1,
+                &62 => y += 1,
+                &60 => y -= 1,
+                _ => (),
+            };
+            position_set.insert((x, y));
 
-//     for i in input.chars() {}
+            (x, y)
+        });
 
-//     position_set.len()
-// }
+    position_set.len()
+}
+
+#[cfg(test)]
+mod test {
+    use crate::*;
+
+    #[test]
+    fn test_second_day() {
+        assert!(true);
+    }
+}

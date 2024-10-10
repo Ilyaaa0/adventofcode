@@ -3,13 +3,11 @@ use std::{collections::HashSet, fs, io};
 fn main() -> io::Result<()> {
     let input = fs::read_to_string("input.txt")?;
 
-    let result = first_day(&input);
+    let res_day1 = first_day(&input);
+    let res_day2 = second_day(&input);
 
-    println!("day1 result: {result:?}");
-
-    let result = first_day_func(&input);
-
-    println!("{result}");
+    println!("day1 result: {res_day1:?}");
+    println!("day2 result: {res_day2:?}");
 
     Ok(())
 }
@@ -21,11 +19,11 @@ fn first_day(input: &str) -> usize {
 
     for i in bytes {
         match i {
-            &94 => x += 1,  // '^'
-            &118 => x -= 1, // 'v'
-            &62 => y += 1,  // '>'
-            &60 => y -= 1,  // '<'
-            _ => {}
+            94 => x += 1,  // '^'
+            118 => x -= 1, // 'v'
+            62 => y += 1,  // '>'
+            60 => y -= 1,  // '<'
+            _ => (),
         }
 
         position_set.insert((x, y));
@@ -34,34 +32,33 @@ fn first_day(input: &str) -> usize {
     position_set.len()
 }
 
-fn first_day_func(input: &str) -> usize {
+fn second_day(input: &str) -> usize {
+    let chars = input.chars().enumerate();
+    let (mut x, mut y) = (0, 0);
     let mut position_set = HashSet::from([(0, 0)]);
 
-    input
-        .as_bytes()
-        .into_iter()
-        .fold((0, 0), |(mut x, mut y), v| {
-            match v {
-                &94 => x += 1,
-                &118 => x -= 1,
-                &62 => y += 1,
-                &60 => y -= 1,
-                _ => (),
-            };
-            position_set.insert((x, y));
-
-            (x, y)
-        });
+    for (idx, ch) in chars {}
 
     position_set.len()
 }
 
 #[cfg(test)]
 mod test {
-    use crate::*;
+    use crate::second_day;
 
     #[test]
-    fn test_second_day() {
-        assert!(true);
+    fn test_second_day_case1() {
+        let data = "^v";
+        let result = second_day(&data);
+
+        assert_eq!(result, 3);
+    }
+
+    #[test]
+    fn test_second_day_case2() {
+        let data = "^>v<";
+        let result = second_day(&data);
+
+        assert_eq!(result, 3);
     }
 }

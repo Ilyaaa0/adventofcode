@@ -1,7 +1,7 @@
 use std::{collections::HashSet, fs, io};
 
 fn main() -> io::Result<()> {
-    let input = fs::read_to_string("input.txt")?;
+    let input = fs::read_to_string("./src/input.txt")?;
 
     let res_day1 = first_day(&input);
     let res_day2 = second_day(&input);
@@ -35,9 +35,26 @@ fn first_day(input: &str) -> usize {
 fn second_day(input: &str) -> usize {
     let chars = input.chars().enumerate();
     let (mut x, mut y) = (0, 0);
-    let mut position_set = HashSet::from([(0, 0)]);
 
-    for (idx, ch) in chars {}
+    let mut set1 = HashSet::from([(x, y)]);
+    let mut set2 = HashSet::from([(x, y)]);
+
+    for (idx, ch) in chars {
+        match ch {
+            '^' => x += 1,
+            'v' => x -= 1,
+            '>' => y += 1,
+            '<' => y -= 1,
+            _ => (),
+        }
+
+        match idx % 2 == 0 {
+            true => set1.insert((x, y)),
+            false => set2.insert((x, y)),
+        };
+    }
+
+    let mut position_set = HashSet::from([(x, y)]);
 
     position_set.len()
 }

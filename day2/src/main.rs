@@ -1,49 +1,45 @@
-use std::cmp::min;
+use std::{cmp::min, fs, io};
 
-fn main() -> Result<(), std::io::Error> {
-    let input = std::fs::read_to_string("./src/input.txt")?;
-
-    println!("First part: {}", first_part(&input));
-    println!("Second part: {}", second_part(&input));
+fn main() -> Result<(), io::Error> {
+    println!(
+        "day1: {}",
+        first_part(&fs::read_to_string("./src/input.txt")?)
+    );
+    println!(
+        "day2: {}",
+        second_part(&fs::read_to_string("./src/input.txt")?)
+    );
 
     Ok(())
 }
 
-fn first_part(input: &String) -> i32 {
-    let mut solution = 0;
-
-    input.lines().for_each(|x| {
-        let numbers = x
-            .split("x")
-            .map(|x| x.trim().parse::<i32>().unwrap_or(0))
-            .collect::<Vec<i32>>();
-
-        solution += 2
-            * (numbers[0] * numbers[1] + numbers[0] * numbers[2] + numbers[1] * numbers[2])
-            + min(
-                numbers[0] * numbers[1],
-                min(numbers[1] * numbers[2], numbers[0] * numbers[2]),
-            );
-    });
-
-    solution
+fn first_part(input: &str) -> i32 {
+    input
+        .lines()
+        .map(|x| {
+            x.split("x")
+                .map(|x| x.trim().parse::<i32>().unwrap_or(0))
+                .collect::<Vec<i32>>()
+        })
+        .fold(0, |x, y| {
+            x + 2 * (y[0] * y[1] + y[0] * y[2] + y[1] * y[2])
+                + min(y[0] * y[1], min(y[1] * y[2], y[0] * y[2]))
+        })
 }
 
-fn second_part(input: &String) -> i32 {
-    let mut solution = 0;
-
-    input.lines().for_each(|x| {
-        let mut numbers = x
-            .split("x")
-            .map(|x| x.trim().parse::<i32>().unwrap_or(0))
-            .collect::<Vec<i32>>();
-
-        numbers.sort();
-
-        solution += 2 * (numbers[0] + numbers[1]) + numbers[0] * numbers[1] * numbers[2]
-    });
-
-    solution
+fn second_part(input: &str) -> i32 {
+    input
+        .lines()
+        .map(|x| {
+            x.split("x")
+                .map(|x| x.trim().parse::<i32>().unwrap_or(0))
+                .collect::<Vec<i32>>()
+        })
+        .map(|mut x| {
+            x.sort();
+            x
+        })
+        .fold(0, |x, y| x + 2 * (y[0] + y[1]) + y[0] * y[1] * y[2])
 }
 
 #[cfg(test)]
@@ -51,14 +47,12 @@ mod test {
     use crate::*;
 
     #[test]
-    fn test_first_part() {
-        let data = r#"2x3x4"#.to_string();
-        assert_eq!(first_part(&data), 58);
+    fn day1() {
+        assert_eq!(first_part("2x3x4"), 58);
     }
 
     #[test]
-    fn test_second_part() {
-        let data = r#"2x3x4"#.to_string();
-        assert_eq!(second_part(&data), 34);
+    fn day2() {
+        assert_eq!(second_part("2x3x4"), 34);
     }
 }

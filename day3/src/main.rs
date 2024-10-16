@@ -1,13 +1,14 @@
 use std::{collections::HashSet, fs, io};
 
 fn main() -> io::Result<()> {
-    let input = fs::read_to_string("./src/input.txt")?;
-
-    let res_day1 = first_day(&input);
-    let res_day2 = second_day(&input);
-
-    println!("day1 result: {res_day1:?}");
-    println!("day2 result: {res_day2:?}");
+    println!(
+        "day1: {}",
+        second_day(&fs::read_to_string("./src/input.txt")?)
+    );
+    println!(
+        "day2: {}",
+        first_day(&fs::read_to_string("./src/input.txt")?)
+    );
 
     Ok(())
 }
@@ -35,47 +36,60 @@ fn first_day(input: &str) -> usize {
 fn second_day(input: &str) -> usize {
     let chars = input.chars().enumerate();
     let (mut x, mut y) = (0, 0);
+    let (mut rx, mut ry) = (0, 0);
 
-    let mut set1 = HashSet::from([(x, y)]);
-    let mut set2 = HashSet::from([(x, y)]);
+    let mut position_set_santa = HashSet::from([(x, y)]);
+    let mut position_set_robosanta = HashSet::from([(rx, ry)]);
 
     for (idx, ch) in chars {
-        match ch {
-            '^' => x += 1,
-            'v' => x -= 1,
-            '>' => y += 1,
-            '<' => y -= 1,
-            _ => (),
-        }
+        match idx % 2 {
+            0 => {
+                match ch {
+                    '^' => x += 1,
+                    'v' => x -= 1,
+                    '>' => y += 1,
+                    '<' => y -= 1,
+                    _ => (),
+                }
 
-        match idx % 2 == 0 {
-            true => set1.insert((x, y)),
-            false => set2.insert((x, y)),
-        };
+                position_set_santa.insert((x, y));
+            }
+            _ => {
+                match ch {
+                    '^' => rx += 1,
+                    'v' => rx -= 1,
+                    '>' => ry += 1,
+                    '<' => ry -= 1,
+                    _ => (),
+                }
+
+                position_set_robosanta.insert((rx, ry));
+            }
+        }
     }
 
-    let mut position_set = HashSet::from([(x, y)]);
-
-    position_set.len()
+    position_set_santa
+        .union(&position_set_robosanta)
+        .collect::<HashSet<&(i32, i32)>>()
+        .len()
 }
 
 #[cfg(test)]
 mod test {
-    use crate::second_day;
+    use crate::*;
 
     #[test]
-    fn test_second_day_case1() {
-        let data = "^v";
-        let result = second_day(&data);
-
-        assert_eq!(result, 3);
+    fn test_day2_case1() {
+        assert_eq!(second_day("^v"), 3);
     }
 
     #[test]
-    fn test_second_day_case2() {
-        let data = "^>v<";
-        let result = second_day(&data);
+    fn test_day3_case2() {
+        assert_eq!(second_day("^>v<"), 3);
+    }
 
-        assert_eq!(result, 3);
+    #[test]
+    fn test_day2_case3() {
+        assert_eq!(second_day("^v^v^v^v^v"), 11);
     }
 }

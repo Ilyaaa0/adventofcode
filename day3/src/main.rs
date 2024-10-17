@@ -2,18 +2,18 @@ use std::{collections::HashSet, fs, io};
 
 fn main() -> io::Result<()> {
     println!(
-        "day1: {}",
-        second_day(&fs::read_to_string("./src/input.txt")?)
+        "First part: {}",
+        first_part(&fs::read_to_string("./src/input.txt")?)
     );
     println!(
-        "day2: {}",
-        first_day(&fs::read_to_string("./src/input.txt")?)
+        "Second part: {}",
+        second_part(&fs::read_to_string("./src/input.txt")?)
     );
 
     Ok(())
 }
 
-fn first_day(input: &str) -> usize {
+fn first_part(input: &str) -> usize {
     let bytes = input.as_bytes();
     let (mut x, mut y) = (0, 0);
     let mut position_set = HashSet::from([(x, y)]);
@@ -33,7 +33,7 @@ fn first_day(input: &str) -> usize {
     position_set.len()
 }
 
-fn second_day(input: &str) -> usize {
+fn second_part(input: &str) -> usize {
     let chars = input.chars().enumerate();
     let (mut x, mut y) = (0, 0);
     let (mut rx, mut ry) = (0, 0);
@@ -79,17 +79,17 @@ mod test {
     use crate::*;
 
     #[test]
-    fn test_day2_case1() {
-        assert_eq!(second_day("^v"), 3);
+    fn case1() {
+        assert_eq!(second_part("^v"), 3);
     }
 
     #[test]
-    fn test_day3_case2() {
-        assert_eq!(second_day("^>v<"), 3);
+    fn case2() {
+        assert_eq!(second_part("^>v<"), 3);
     }
 
     #[test]
-    fn test_day2_case3() {
-        assert_eq!(second_day("^v^v^v^v^v"), 11);
+    fn case3() {
+        assert_eq!(second_part("^v^v^v^v^v"), 11);
     }
 }

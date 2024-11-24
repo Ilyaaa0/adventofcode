@@ -1,24 +1,19 @@
 use std::{collections::HashSet, fs, io};
 
 fn main() -> io::Result<()> {
-    println!(
-        "First part: {}",
-        first_part(&fs::read_to_string("./src/input.txt")?)
-    );
-    println!(
-        "Second part: {}",
-        second_part(&fs::read_to_string("./src/input.txt")?)
-    );
+    let input = fs::read_to_string("./src/input.txt")?;
+
+    println!("First part: {}", first_part(&input));
+    println!("Second part: {}", second_part(&input));
 
     Ok(())
 }
 
 fn first_part(input: &str) -> usize {
-    let bytes = input.as_bytes();
     let (mut x, mut y) = (0, 0);
     let mut position_set = HashSet::from([(x, y)]);
 
-    for i in bytes {
+    for i in input.as_bytes() {
         match i {
             94 => x += 1,  // '^'
             118 => x -= 1, // 'v'
@@ -34,14 +29,13 @@ fn first_part(input: &str) -> usize {
 }
 
 fn second_part(input: &str) -> usize {
-    let chars = input.chars().enumerate();
     let (mut x, mut y) = (0, 0);
     let (mut rx, mut ry) = (0, 0);
 
     let mut position_set_santa = HashSet::from([(x, y)]);
     let mut position_set_robosanta = HashSet::from([(rx, ry)]);
 
-    for (idx, ch) in chars {
+    for (idx, ch) in input.chars().enumerate() {
         match idx % 2 {
             0 => {
                 match ch {

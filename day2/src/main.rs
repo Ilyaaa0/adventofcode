@@ -1,14 +1,10 @@
 use std::{cmp::min, fs, io};
 
 fn main() -> Result<(), io::Error> {
-    println!(
-        "day1: {}",
-        first_part(&fs::read_to_string("./src/input.txt")?)
-    );
-    println!(
-        "day2: {}",
-        second_part(&fs::read_to_string("./src/input.txt")?)
-    );
+    let input = fs::read_to_string("./src/input.txt")?;
+
+    println!("day1: {}", first_part(&input));
+    println!("day2: {}", second_part(&input));
 
     Ok(())
 }

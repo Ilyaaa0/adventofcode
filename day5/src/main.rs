@@ -4,13 +4,13 @@ fn main() -> io::Result<()> {
     let input = fs::read_to_string("./src/input.txt")?;
 
     println!("{}", first_day(&input));
+    println!("{}", second_day(&input));
 
     Ok(())
 }
 
 fn first_day(input: &str) -> i32 {
     let mut result = 0;
-    let input = input.trim();
     let vowels = HashSet::from(['a', 'e', 'i', 'o', 'u']);
 
     for line in input.lines() {
@@ -27,7 +27,7 @@ fn first_day(input: &str) -> i32 {
 
         let vowels_count = list
             .iter()
-            .filter_map(|x| vowels.get(&x))
+            .filter_map(|x| vowels.get(x))
             .collect::<Vec<_>>();
 
         if vowels_count.len() >= 3
@@ -40,6 +40,37 @@ fn first_day(input: &str) -> i32 {
         {
             result += 1;
         }
+    }
+
+    result
+}
+
+fn second_day(input: &str) -> i32 {
+    let mut result = 0;
+
+    for line in input.lines() {
+        let list = line.chars().collect::<Vec<char>>();
+
+        let duplicates_chars_vec = list
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| {
+                list.get(*i).is_some_and(|x| {
+                    list.get(i + 1).is_some_and(|y| {
+                        list.get(i + 2).is_some_and(|z| x == z && y != x && y != z)
+                    })
+                })
+            })
+            .collect::<Vec<_>>();
+
+        let mut double_char = String::new();
+
+        list.iter().enumerate().for_each(|(i, _)| {
+            list.get(i)
+                .is_some_and(|x| list.get(i + 1).is_some_and(|y| x.eq(y)));
+        });
+
+        let repeats_chars_vec = list.iter();
     }
 
     result

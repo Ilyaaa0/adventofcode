@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fs, io};
+use std::{collections::HashSet, fs, io, iter::zip};
 
 fn main() -> io::Result<()> {
     let input = fs::read_to_string("./src/input.txt")?;
@@ -9,6 +9,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
+#[inline]
 fn first_day(input: &str) -> i32 {
     let mut result = 0;
     let vowels = HashSet::from(['a', 'e', 'i', 'o', 'u']);
@@ -45,6 +46,7 @@ fn first_day(input: &str) -> i32 {
     result
 }
 
+#[inline]
 fn second_day(input: &str) -> i32 {
     let mut result = 0;
 
@@ -63,14 +65,15 @@ fn second_day(input: &str) -> i32 {
             })
             .collect::<Vec<_>>();
 
-        let mut double_char = String::new();
+        let chars_pairs_vec = zip(
+            list.iter().enumerate().filter_map(|(idx, _)| list.get(idx)),
+            list.iter()
+                .enumerate()
+                .filter_map(|(idx, _)| list.get(idx + 1)),
+        )
+        .collect::<Vec<_>>();
 
-        list.iter().enumerate().for_each(|(i, _)| {
-            list.get(i)
-                .is_some_and(|x| list.get(i + 1).is_some_and(|y| x.eq(y)));
-        });
-
-        let repeats_chars_vec = list.iter();
+        let chars_pairs_set = chars_pairs_vec.iter().collect::<HashSet<_>>();
     }
 
     result
